@@ -73,11 +73,7 @@ public class WeatherAnalyzer {
             while ((line = reader.readLine()) != null){
                 try{
                     String[] split_data = line.split(","); 
-                    // data[index] = split_data;
                     data.add(split_data);
-
-                    // index++;
-                    // System.out.println(date + " + " + highTemp);
                 }catch (Exception e){
                     System.out.println(e);
                 }
@@ -121,54 +117,86 @@ public class WeatherAnalyzer {
     }
 
     public static void displayStatistics(ArrayList<Double> values, String columnName) {
-                // Calculate and display all required statistics
-                double average = 0.0;
-                double amountOfNums = 0.0;
-                double sum = 0.0;
-                String tempRound = "%.1f";
-                String precipRound = "%.2f";
-                int totalDataPointsCount = 0;
+            // Calculate and display all required statistics
+            double average = 0.0;
+            double amountOfNums = 0.0;
+            double sum = 0.0;
+            String tempRound = "%.1f";
+            String precipRound = "%.2f";
+            int totalDataPointsCount = 0;
 
-                // if statement: temp round to 1 dec. place & precip round to 2 dec. place
-                if (!(columnName.equals("PrecipitationIN") || columnName.equals("Humidity"))){ // for temp only
+            // Find High/Low Temp Values
+            if (!(columnName.equals("PrecipitationIN") || columnName.equals("Humidity"))){ // for temp only
 
-                // Finding Temp Avg
-                for (int i = 0; i < values.size(); i++){
-                    System.out.println(values.get(i));
-                    sum += values.get(i);
-                    amountOfNums++;
-                    totalDataPointsCount++;
+            // Finding Temp Avg
+            for (int i = 0; i < values.size(); i++){
+                System.out.println(values.get(i));
+                sum += values.get(i);
+                amountOfNums++;
+            }
+            System.out.print("Average: ");
+            System.out.printf(tempRound,(sum/amountOfNums));
+            System.out.print("°F");
+            System.out.println();
+            // Finding Temp Min
+            double min = values.get(0);
+            for (int i = 1; i < values.size(); i++){
+                if (min > values.get(i)){
+                    min = values.get(i);
                 }
-                System.out.print("Average: ");
-                System.out.printf(tempRound,(sum/amountOfNums));
-                System.out.print("°F");
-                System.out.println();
-                // Finding Temp Min
-                double min = values.get(0);
-                for (int i = 1; i < values.size(); i++){
-                    if (min > values.get(i)){
-                        min = values.get(i);
-                    }
+            }
+            System.out.print("Min: ");
+            System.out.printf(tempRound,min);
+            System.out.print("°F");
+            System.out.println();
+            // Finding Temp Max
+            double max = values.get(0);
+            for (int i = 0; i < values.size(); i++){
+                if (max < values.get(i)){
+                    max = values.get(i);
                 }
-                System.out.print("Min: ");
-                System.out.printf(tempRound,min);
-                System.out.print("°F");
-                System.out.println();
-                // Finding Temp Max
-                double max = values.get(0);
-                for (int i = 0; i < values.size(); i++){
-                    if (max < values.get(i)){
-                        max = values.get(i);
-                    }
-                }
-                System.out.print("Max: ");
-                System.out.printf(tempRound,max);
-                System.out.print("°F");
-                System.out.println();
-                System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
-                }
-                invalidDataCount = 0; // Reset counter for next iteration
-            } 
+            }
+            System.out.print("Max: ");
+            System.out.printf(tempRound,max);
+            System.out.print("°F");
+            System.out.println();
 
+            } // Finding Precip Values
+            else if (columnName.equals("PrecipitationIN")){
+            for (int i = 0; i < values.size(); i++){
+                System.out.println(values.get(i));
+                sum += values.get(i);
+                amountOfNums++;
+            }
+            System.out.print("Average: ");
+            System.out.printf(precipRound,(sum/amountOfNums));
+            System.out.print("in");
+            System.out.println();
+            // Finding Temp Min
+            double min = values.get(0);
+            for (int i = 1; i < values.size(); i++){
+                if (min > values.get(i)){
+                    min = values.get(i);
+                }
+            }
+            System.out.print("Min: ");
+            System.out.printf(precipRound,min);
+            System.out.print("in");
+            System.out.println();
+            // Finding Precip Max
+            double max = values.get(0);
+            for (int i = 0; i < values.size(); i++){
+                if (max < values.get(i)){
+                    max = values.get(i);
+                }
+            }
+            System.out.print("Max: ");
+            System.out.printf(precipRound,max);
+            System.out.print("in");
+            System.out.println();
+            System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
+            }
+            invalidDataCount = 0; // Reset counter for next iteration
+        } 
 
 }
