@@ -9,22 +9,26 @@ import java.util.InputMismatchException;
 
 public class WeatherAnalyzer {
 
+    static int invalidDataCount = 0;
+
     public static void main(String[] args) {
         // Main program logic
         Scanner input = new Scanner(System.in);
         ArrayList<Double> numericColArray = new ArrayList<>();
         boolean programRun = true;
+        String file;
         if (args.length != 1){
             System.err.println("Usage: java WeatherAnalyzer.java <filename>");
             System.exit(1);
-        }else{
-            String file = args[0];
         }
+
+        file = args[0];
+        ArrayList<String[]> splitDataArray = readCSV(file);
+
         while (programRun){
             try{
-                ArrayList<String[]> splitDataArray = readCSV(file);
-
-                System.out.println("What column would you like to analyze? \nHigh temp [1]\nLow Temp [2]\nHumidity[3]\nWind Speed [4]\nPrecipitation[5]");
+                System.out.println();
+                System.out.println("What column would you like to analyze? \nHigh temp [1]\nLow Temp [2]\nHumidity[3]\nWind Speed [4]\nPrecipitation[5]\nExit[6]");
                 int user_input = input.nextInt();
                 if (user_input == 1){
                     numericColArray = extractNumericColumn(splitDataArray, 1);
@@ -41,10 +45,17 @@ public class WeatherAnalyzer {
                 }else if (user_input == 5){
                     numericColArray = extractNumericColumn(splitDataArray, 5);
                     displayStatistics(numericColArray, "PrecipitationIN");
+                }else if(user_input == 6){
+                    System.out.println("Closing program.");
+                    System.exit(1);
                 }else{
-                    throw new Exception("Please input a number from 1-5.");
+                    throw new Exception("Please input a number from 1-6.");
                 }
-            }catch(Exception e){
+            }catch(InputMismatchException e){
+                System.out.println("Enter an integer from 1-6.");
+                input.nextLine();
+            }
+            catch(Exception e){
                 System.out.println(e.getMessage());
             } 
         }
@@ -94,9 +105,6 @@ public class WeatherAnalyzer {
     public static ArrayList<Double> extractNumericColumn(ArrayList<String[]> data, int columnIndex) {
         // Extract and validate numeric data from specified column
         ArrayList<Double> results = new ArrayList<>();
-        // For a B grade:
-        int totalDataPointsCount = 0;
-        int invalidDataCount = 0;
 
         for (int i = 1; i <data.size(); i++){
             String[] row = data.get(i);
@@ -104,9 +112,10 @@ public class WeatherAnalyzer {
                 double val = Double.parseDouble(row[columnIndex]);
                 results.add(val);
             }catch(NumberFormatException e){
-                System.out.println("Invalid data format detected.");
-                }
+                System.out.println("Invalid data format detected.");  
+                invalidDataCount++;             
             }
+        }
         return results;
 
     }
@@ -118,6 +127,7 @@ public class WeatherAnalyzer {
                 double sum = 0.0;
                 String tempRound = "%.1f";
                 String precipRound = "%.2f";
+                int totalDataPointsCount = 0;
 
                 // if statement: temp round to 1 dec. place & precip round to 2 dec. place
                 if (!(columnName.equals("PrecipitationIN") || columnName.equals("Humidity"))){ // for temp only
@@ -127,6 +137,7 @@ public class WeatherAnalyzer {
                     System.out.println(values.get(i));
                     sum += values.get(i);
                     amountOfNums++;
+                    totalDataPointsCount++;
                 }
                 System.out.print("Average: ");
                 System.out.printf(tempRound,(sum/amountOfNums));
@@ -154,8 +165,9 @@ public class WeatherAnalyzer {
                 System.out.printf(tempRound,max);
                 System.out.print("°F");
                 System.out.println();
+                System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
                 }
-                
+                invalidDataCount = 0; // Reset counter for next iteration
             } 
 
 
