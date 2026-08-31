@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
-
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class WeatherAnalyzer {
 
@@ -113,6 +113,10 @@ public class WeatherAnalyzer {
                 // System.out.println("Invalid data format detected.");  
                 invalidDataCount++;
                 totalDataPointsCount++;             
+            }catch(ArrayIndexOutOfBoundsException e){
+                System.out.println("Error while parsing on row " + i + ". Incomplete array of numbers.");
+                invalidDataCount++;
+                totalDataPointsCount++;
             }
 
         }
