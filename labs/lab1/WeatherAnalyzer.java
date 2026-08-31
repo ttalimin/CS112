@@ -30,7 +30,7 @@ public class WeatherAnalyzer {
         while (programRun){
             try{
                 System.out.println();
-                System.out.println("What column would you like to analyze? \nHigh temp [1]\nLow Temp [2]\nHumidity[3]\nWind Speed [4]\nPrecipitation[5]\nExit[6]");
+                System.out.print("What column would you like to analyze? \nHigh temp [1]\nLow Temp [2]\nHumidity[3]\nWind Speed [4]\nPrecipitation[5]\nExit[6]\nEnter response: ");
                 int user_input = input.nextInt();
                 if (user_input == 1){
                     numericColArray = extractNumericColumn(splitDataArray, 1);
@@ -110,7 +110,7 @@ public class WeatherAnalyzer {
                 double val = Double.parseDouble(row[columnIndex]);
                 results.add(val);
             }catch(NumberFormatException e){
-                System.out.println("Invalid data format detected.");  
+                // System.out.println("Invalid data format detected.");  
                 invalidDataCount++;
                 totalDataPointsCount++;             
             }
@@ -246,9 +246,10 @@ public class WeatherAnalyzer {
 
             // Finding WindSpeed Avg
             for (int i = 0; i < values.size(); i++){
-                System.out.println(values.get(i));
+                // System.out.println(values.get(i));
                 sum += values.get(i);
                 amountOfNums++;
+                totalDataPointsCount++;
             }
             System.out.print("Average: ");
             System.out.printf(tempRound,(sum/amountOfNums));
