@@ -3,6 +3,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 
 public class WeatherAnalyzer {
@@ -10,28 +11,26 @@ public class WeatherAnalyzer {
     public static void main(String[] args) {
         // Main program logic
         String file = args[0];
-        // System.out.println(fileName);
         ArrayList<String[][]> splitDataArray = readCSV(file);
-        double[] numericColArray = extractNumericColumn(splitDataArray, 1);
-        displayStatistics(numericColArray, "HighTemp");
+        ArrayList<Double[]> numericColArray = extractNumericColumn(splitDataArray, 1);
     }
 
     public static ArrayList<String[][]> readCSV(String filename) {
         // Read and parse CSV file
         ArrayList<String[][]> data = new ArrayList<>();
-        // Scanner input = new Scanner(System.in);
         BufferedReader reader = null;
+        // int index = 0;
         try {
             reader = new BufferedReader(new FileReader(filename));
             String line;
 
             while ((line = reader.readLine()) != null){
-                try{ 
-                    String[] split_data = line.split(",");
-                    data[index] = split_data;
+                try{
+                    ArrayList<String[]> split_data = line.split(","); 
+                    // data[index] = split_data;
+                    // data.add(split_data);
 
-                    index++;
-
+                    // index++;
                     // System.out.println(date + " + " + highTemp);
                 }catch (Exception e){
                     System.out.println(e);
@@ -55,30 +54,33 @@ public class WeatherAnalyzer {
 
         return data;
 
-
     }
 
-    public static double[] extractNumericColumn(String[][] data, int columnIndex) {
+    public static ArrayList<Double[]> extractNumericColumn(ArrayList<String[][]> data, int columnIndex) {
         // Extract and validate numeric data from specified column
         // return avg val (C)
-        double[] results = new double[data.length];
+        // Double[] results = new double[data.length];
+        ArrayList<Double[]> results = new ArrayList<>();
         int resultsIndex = 0;
         // For a B grade:
         int totalDataPointsCount = 0;
         int invalidDataCount = 0;
 
-        for (int i = 1; i <data.length; i++){
+        for (int i = 1; i <data.size(); i++){
+            String[] row = data.get(i);
             try{
-                double val = Double.parseDouble(data[i][columnIndex]);
-                results[resultsIndex] = val;
-                resultsIndex++;
-                // System.out.println(val); 
-                totalDataPointsCount++;  
+    //         double val = Double.parseDouble(data[i][columnIndex]);
+                double val = Double.parseDouble(row[columnIndex]);
+    //         // results[resultsIndex] = val;
+    //         // resultsIndex++;
+                results.add(val);
+                System.out.println(val); 
+    //         totalDataPointsCount++;  
             }catch(NumberFormatException e){
-                System.out.println("Invalid data format detected.");
-                invalidDataCount++;
-                totalDataPointsCount++;
-                results[resultsIndex] = 0;
+        //         System.out.println("Invalid data format detected.");
+        //         invalidDataCount++;
+        //         totalDataPointsCount++;
+        //         // results[resultsIndex] = 0;
             }
             
         }
@@ -86,10 +88,10 @@ public class WeatherAnalyzer {
 
     }
 
-    public static void displayStatistics(double[] values, String columnName) {
+    public static void displayStatistics(ArrayList<Double[]> values, String columnName) {
         // Calculate and display all required statistics
-        for (int i = 0; i < values.length; i++){
-            System.out.println(values[i]);
+        for (int i = 0; i < values.size(); i++){
+            System.out.println(values.get(i));
         }
     }
 }
