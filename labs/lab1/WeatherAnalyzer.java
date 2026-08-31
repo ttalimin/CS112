@@ -160,8 +160,9 @@ public class WeatherAnalyzer {
             System.out.printf(tempRound,max);
             System.out.print("°F");
             System.out.println();
+            } 
 
-            } // Finding Precip Values
+            // Finding Precip Values
             else if (columnName.equals("PrecipitationIN")){
             for (int i = 0; i < values.size(); i++){
                 System.out.println(values.get(i));
@@ -193,6 +194,43 @@ public class WeatherAnalyzer {
             System.out.print("Max: ");
             System.out.printf(precipRound,max);
             System.out.print("in");
+            System.out.println();
+            System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
+            }
+
+            // Finding Humidity Values
+            else if (columnName.equals("Humidity")){
+
+                for (int i = 0; i < values.size(); i++){
+                System.out.println(values.get(i));
+                sum += values.get(i);
+                amountOfNums++;
+            }
+            System.out.print("Average: ");
+            System.out.printf(tempRound,(sum/amountOfNums));
+            System.out.print("%");
+            System.out.println();
+            // Finding Humidity Min
+            double min = values.get(0);
+            for (int i = 1; i < values.size(); i++){
+                if (min > values.get(i)){
+                    min = values.get(i);
+                }
+            }
+            System.out.print("Min: ");
+            System.out.printf(tempRound,min);
+            System.out.print("%");
+            System.out.println();
+            // Finding Humiditiy Max
+            double max = values.get(0);
+            for (int i = 0; i < values.size(); i++){
+                if (max < values.get(i)){
+                    max = values.get(i);
+                }
+            }
+            System.out.print("Max: ");
+            System.out.printf(tempRound,max);
+            System.out.print("%");
             System.out.println();
             System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
             }
