@@ -4,20 +4,55 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 
 public class WeatherAnalyzer {
 
     public static void main(String[] args) {
         // Main program logic
-        String file = args[0];
-        ArrayList<String[][]> splitDataArray = readCSV(file);
-        ArrayList<Double[]> numericColArray = extractNumericColumn(splitDataArray, 1);
+        Scanner input = new Scanner(System.in);
+        ArrayList<Double> numericColArray = new ArrayList<>();
+        boolean programRun = true;
+        if (args.length != 1){
+            System.err.println("Usage: java WeatherAnalyzer.java <filename>");
+            System.exit(1);
+        }else{
+            String file = args[0];
+        }
+        while (programRun){
+            try{
+                ArrayList<String[]> splitDataArray = readCSV(file);
+
+                System.out.println("What column would you like to analyze? \nHigh temp [1]\nLow Temp [2]\nHumidity[3]\nWind Speed [4]\nPrecipitation[5]");
+                int user_input = input.nextInt();
+                if (user_input == 1){
+                    numericColArray = extractNumericColumn(splitDataArray, 1);
+                    displayStatistics(numericColArray, "HighTempF");
+                }else if (user_input == 2){
+                    numericColArray = extractNumericColumn(splitDataArray, 2);
+                    displayStatistics(numericColArray, "LowTempF");
+                }else if (user_input == 3){
+                    numericColArray = extractNumericColumn(splitDataArray, 3);
+                    displayStatistics(numericColArray, "Humidity");
+                }else if (user_input == 4){
+                    numericColArray = extractNumericColumn(splitDataArray, 4);
+                    displayStatistics(numericColArray, "WindSpeedMPH");
+                }else if (user_input == 5){
+                    numericColArray = extractNumericColumn(splitDataArray, 5);
+                    displayStatistics(numericColArray, "PrecipitationIN");
+                }else{
+                    throw new Exception("Please input a number from 1-5.");
+                }
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            } 
+        }
     }
 
-    public static ArrayList<String[][]> readCSV(String filename) {
+    public static ArrayList<String[]> readCSV(String filename) {
         // Read and parse CSV file
-        ArrayList<String[][]> data = new ArrayList<>();
+        ArrayList<String[]> data = new ArrayList<>();
         BufferedReader reader = null;
         // int index = 0;
         try {
@@ -26,9 +61,9 @@ public class WeatherAnalyzer {
 
             while ((line = reader.readLine()) != null){
                 try{
-                    ArrayList<String[]> split_data = line.split(","); 
+                    String[] split_data = line.split(","); 
                     // data[index] = split_data;
-                    // data.add(split_data);
+                    data.add(split_data);
 
                     // index++;
                     // System.out.println(date + " + " + highTemp);
@@ -56,12 +91,9 @@ public class WeatherAnalyzer {
 
     }
 
-    public static ArrayList<Double[]> extractNumericColumn(ArrayList<String[][]> data, int columnIndex) {
+    public static ArrayList<Double> extractNumericColumn(ArrayList<String[]> data, int columnIndex) {
         // Extract and validate numeric data from specified column
-        // return avg val (C)
-        // Double[] results = new double[data.length];
-        ArrayList<Double[]> results = new ArrayList<>();
-        int resultsIndex = 0;
+        ArrayList<Double> results = new ArrayList<>();
         // For a B grade:
         int totalDataPointsCount = 0;
         int invalidDataCount = 0;
@@ -69,29 +101,62 @@ public class WeatherAnalyzer {
         for (int i = 1; i <data.size(); i++){
             String[] row = data.get(i);
             try{
-    //         double val = Double.parseDouble(data[i][columnIndex]);
                 double val = Double.parseDouble(row[columnIndex]);
-    //         // results[resultsIndex] = val;
-    //         // resultsIndex++;
                 results.add(val);
-                System.out.println(val); 
-    //         totalDataPointsCount++;  
             }catch(NumberFormatException e){
-        //         System.out.println("Invalid data format detected.");
-        //         invalidDataCount++;
-        //         totalDataPointsCount++;
-        //         // results[resultsIndex] = 0;
+                System.out.println("Invalid data format detected.");
+                }
             }
-            
-        }
         return results;
 
     }
 
-    public static void displayStatistics(ArrayList<Double[]> values, String columnName) {
-        // Calculate and display all required statistics
-        for (int i = 0; i < values.size(); i++){
-            System.out.println(values.get(i));
-        }
-    }
+    public static void displayStatistics(ArrayList<Double> values, String columnName) {
+                // Calculate and display all required statistics
+                double average = 0.0;
+                double amountOfNums = 0.0;
+                double sum = 0.0;
+                String tempRound = "%.1f";
+                String precipRound = "%.2f";
+
+                // if statement: temp round to 1 dec. place & precip round to 2 dec. place
+                if (!(columnName.equals("PrecipitationIN") || columnName.equals("Humidity"))){ // for temp only
+
+                // Finding Temp Avg
+                for (int i = 0; i < values.size(); i++){
+                    System.out.println(values.get(i));
+                    sum += values.get(i);
+                    amountOfNums++;
+                }
+                System.out.print("Average: ");
+                System.out.printf(tempRound,(sum/amountOfNums));
+                System.out.print("°F");
+                System.out.println();
+                // Finding Temp Min
+                double min = values.get(0);
+                for (int i = 1; i < values.size(); i++){
+                    if (min > values.get(i)){
+                        min = values.get(i);
+                    }
+                }
+                System.out.print("Min: ");
+                System.out.printf(tempRound,min);
+                System.out.print("°F");
+                System.out.println();
+                // Finding Temp Max
+                double max = values.get(0);
+                for (int i = 0; i < values.size(); i++){
+                    if (max < values.get(i)){
+                        max = values.get(i);
+                    }
+                }
+                System.out.print("Max: ");
+                System.out.printf(tempRound,max);
+                System.out.print("°F");
+                System.out.println();
+                }
+                
+            } 
+
+
 }
