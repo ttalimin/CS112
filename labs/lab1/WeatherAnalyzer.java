@@ -10,6 +10,8 @@ import java.util.InputMismatchException;
 public class WeatherAnalyzer {
 
     static int invalidDataCount = 0;
+    static int totalDataPointsCount = 0;
+
 
     public static void main(String[] args) {
         // Main program logic
@@ -109,8 +111,10 @@ public class WeatherAnalyzer {
                 results.add(val);
             }catch(NumberFormatException e){
                 System.out.println("Invalid data format detected.");  
-                invalidDataCount++;             
+                invalidDataCount++;
+                totalDataPointsCount++;             
             }
+
         }
         return results;
 
@@ -123,16 +127,16 @@ public class WeatherAnalyzer {
             double sum = 0.0;
             String tempRound = "%.1f";
             String precipRound = "%.2f";
-            int totalDataPointsCount = 0;
 
             // Find High/Low Temp Values
-            if (!(columnName.equals("PrecipitationIN") || columnName.equals("Humidity"))){ // for temp only
+            if (columnName.equals("HighTempF") || columnName.equals("LowTempF")){ // for temp only
 
             // Finding Temp Avg
             for (int i = 0; i < values.size(); i++){
-                System.out.println(values.get(i));
+                // System.out.println(values.get(i));
                 sum += values.get(i);
                 amountOfNums++;
+                totalDataPointsCount++;
             }
             System.out.print("Average: ");
             System.out.printf(tempRound,(sum/amountOfNums));
@@ -160,14 +164,16 @@ public class WeatherAnalyzer {
             System.out.printf(tempRound,max);
             System.out.print("°F");
             System.out.println();
+            System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
             } 
 
             // Finding Precip Values
             else if (columnName.equals("PrecipitationIN")){
             for (int i = 0; i < values.size(); i++){
-                System.out.println(values.get(i));
+                // System.out.println(values.get(i));
                 sum += values.get(i);
                 amountOfNums++;
+                totalDataPointsCount++;
             }
             System.out.print("Average: ");
             System.out.printf(precipRound,(sum/amountOfNums));
@@ -202,9 +208,10 @@ public class WeatherAnalyzer {
             else if (columnName.equals("Humidity")){
 
                 for (int i = 0; i < values.size(); i++){
-                System.out.println(values.get(i));
+                // System.out.println(values.get(i));
                 sum += values.get(i);
                 amountOfNums++;
+                totalDataPointsCount++;
             }
             System.out.print("Average: ");
             System.out.printf(tempRound,(sum/amountOfNums));
@@ -234,7 +241,47 @@ public class WeatherAnalyzer {
             System.out.println();
             System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
             }
-            invalidDataCount = 0; // Reset counter for next iteration
-        } 
+            // Finding WindSpeed Values
+            else if(columnName.equals("WindSpeedMPH")){
+
+            // Finding WindSpeed Avg
+            for (int i = 0; i < values.size(); i++){
+                System.out.println(values.get(i));
+                sum += values.get(i);
+                amountOfNums++;
+            }
+            System.out.print("Average: ");
+            System.out.printf(tempRound,(sum/amountOfNums));
+            System.out.print("MPH");
+            System.out.println();
+            // Finding Wind Speed Min
+            double min = values.get(0);
+            for (int i = 1; i < values.size(); i++){
+                if (min > values.get(i)){
+                    min = values.get(i);
+                }
+            }
+            System.out.print("Min: ");
+            System.out.printf(tempRound,min);
+            System.out.print("MPH");
+            System.out.println();
+            // Finding Wind Speed Max
+            double max = values.get(0);
+            for (int i = 0; i < values.size(); i++){
+                if (max < values.get(i)){
+                    max = values.get(i);
+                }
+            }
+            System.out.print("Max: ");
+            System.out.printf(tempRound,max);
+            System.out.print("MPH");
+            System.out.println();
+            System.out.println("Rows of invalid data: " + invalidDataCount + "\n" + "Total Data Points Processed: " + totalDataPointsCount);
+            }
+
+            // Reset counter for next iteration
+            invalidDataCount = 0; 
+            totalDataPointsCount = 0;
+        }
 
 }
