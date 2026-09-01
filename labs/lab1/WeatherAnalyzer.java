@@ -26,6 +26,10 @@ public class WeatherAnalyzer {
 
         file = args[0];
         ArrayList<String[]> splitDataArray = readCSV(file);
+        if (splitDataArray.size() == 0){
+            System.out.println("No valid data found or no readable file.");
+            System.exit(1);
+        }
 
         while (programRun){
             try{
@@ -121,8 +125,8 @@ public class WeatherAnalyzer {
 
         }
         return results;
-
     }
+    
 
     public static void displayStatistics(ArrayList<Double> values, String columnName) {
             // Calculate and display all required statistics
